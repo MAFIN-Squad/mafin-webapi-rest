@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net6.0;netstandard2.1</TargetFrameworks>
-    <PackageId>Mafin.Template</PackageId>
+    <PackageId>Mafin.Web.Api.Rest</PackageId>
     <PackageVersion></PackageVersion>
-    <Description>Mafin Template package</Description>
+    <Description>Mafin REST API test automation package.</Description>
     <Authors>Epam Mafin Team</Authors>
   </PropertyGroup>
 

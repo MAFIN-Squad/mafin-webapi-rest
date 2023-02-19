@@ -1,3 +1,3 @@
-# MAFIN Module Template
+# MAFIN Web API REST Module
 
-Contains module template to be used as a baseline for any new modules related to MAFIN.
+Provides capabilities for starting test automation of REST API from scratch.
