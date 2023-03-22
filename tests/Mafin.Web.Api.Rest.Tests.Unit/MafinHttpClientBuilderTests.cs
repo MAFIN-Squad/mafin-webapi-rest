@@ -32,7 +32,7 @@ public class MafinHttpClientBuilderTests
     }
 
     [Fact]
-    public void WithAuthHandler_WhenProvidingHandler_ShouldDelegateHttpCallToSameHandler()
+    public void WithAuthHandler_WhenHandlerPassed_ShouldDelegateHttpCallToSameHandler()
     {
         const string sendMethodName = "Send";
 
@@ -53,7 +53,7 @@ public class MafinHttpClientBuilderTests
     }
 
     [Fact]
-    public void WithAuthHandler_WhenProvidingCustomizationAction_ShouldInvokeAction()
+    public void WithAuthHandler_WhenCustomizationActionPassed_ShouldInvokeAction()
     {
         Mock<Action<HttpClientHandler>> actionMock = new();
         actionMock.Setup(m => m(It.IsAny<HttpClientHandler>())).Verifiable();
@@ -77,7 +77,7 @@ public class MafinHttpClientBuilderTests
     }
 
     [Fact]
-    public void WithJsonSerializerOptions_WhenProvidingOptions_ShouldSetMafinHttpClientOptions()
+    public void WithJsonSerializerOptions_WhenOptionsPassed_ShouldSetMafinHttpClientOptions()
     {
         JsonSerializerOptions options = new();
         _builder = new MafinHttpClientBuilder(Url);
@@ -88,7 +88,7 @@ public class MafinHttpClientBuilderTests
     }
 
     [Fact]
-    public void WithJsonSerializerOptions_WhenProvidingCustomizationAction_ShouldInvokeAction()
+    public void WithJsonSerializerOptions_WhenCustomizationActionPassed_ShouldInvokeAction()
     {
         Mock<Action<JsonSerializerOptions>> actionMock = new();
         actionMock.Setup(m => m(It.IsAny<JsonSerializerOptions>())).Verifiable();
@@ -101,7 +101,7 @@ public class MafinHttpClientBuilderTests
     }
 
     [Fact]
-    public void WithJsonSerializerOptions_WhenProvidingCustomizationActionForExistingOptions_ShouldInvokeActionWithSameOptions()
+    public void WithJsonSerializerOptions_WhenCustomizationActionForExistingOptionsPassed_ShouldInvokeActionWithSameOptions()
     {
         JsonSerializerOptions options = new();
         Mock<Action<JsonSerializerOptions>> actionMock = new();
