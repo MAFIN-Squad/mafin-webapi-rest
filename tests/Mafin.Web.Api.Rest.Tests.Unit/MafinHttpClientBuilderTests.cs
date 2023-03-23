@@ -79,7 +79,7 @@ public class MafinHttpClientBuilderTests
     [Fact]
     public void WithJsonSerializerOptions_WhenOptionsPassed_ShouldSetMafinHttpClientOptions()
     {
-        JsonSerializerOptions options = new();
+        JsonSerializerOptions options = new() { MaxDepth = 5, IgnoreReadOnlyFields = true };
         _builder = new MafinHttpClientBuilder(Url);
 
         var client = _builder.WithJsonSerializerOptions(options).Build();
