@@ -9,5 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="GitVersion.MsBuild" PrivateAssets="all" />
+
+    <InternalsVisibleTo Include="$(MSBuildProjectName).Tests.Unit" />
   </ItemGroup>
 </Project>

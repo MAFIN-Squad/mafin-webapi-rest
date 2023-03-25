@@ -10,8 +10,8 @@ namespace Mafin.Web.Api.Rest;
 public class MafinHttpClientBuilder
 #pragma warning restore CA1001
 {
-    private readonly Uri _baseAddress;
     private readonly List<DelegatingHandler> _requestHandlers = new();
+    private readonly Uri _baseAddress;
     private HttpClientHandler _authHandler = new();
     private JsonSerializerOptions? _options;
 
