@@ -4,7 +4,8 @@
 name: Release and Publish flow
 
 on:  
-  push:    
+  push:
+    branches: [ "main" ]
     
 env:
   PACKAGE_OUPUT_DIRECTORY: ${{ github.workspace }}\output
@@ -31,8 +32,7 @@ jobs:
     - name: Test
       run: dotnet test tests/Mafin.Web.Api.Rest.Tests.Unit/Mafin.Web.Api.Rest.Tests.Unit.csproj --configuration Release --no-build --verbosity normal    
         
-    - name: Git Version
-      if: success() || failure()
+    - name: Git Version      
       id: version
       uses: codacy/git-version@2.4.0      
       with:
