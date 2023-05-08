@@ -5,4 +5,8 @@
     <Description>Mafin REST API test automation package.</Description>
     <Authors>Epam Mafin Team</Authors>
   </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="$(MSBuildProjectName).Tests.Unit" />
+  </ItemGroup>
 </Project>

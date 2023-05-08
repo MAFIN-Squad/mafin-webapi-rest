@@ -17,9 +17,7 @@ public static class HttpContextExtensions
     /// <param name="options">JSON serializer configuration instance.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="response"/> is null.</exception>
-#pragma warning disable S4457 // Parameter validation in "async"/"await" methods should be wrapped
     public static async Task<T?> AsEntity<T>(this HttpResponseMessage response, JsonSerializerOptions? options = null)
-#pragma warning restore S4457
     {
         if (response is null)
         {
