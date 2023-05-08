@@ -32,7 +32,7 @@ jobs:
       run: dotnet build -c ${{ env.CONFIGURATION }} --no-restore -m
 
     - name: Run unit tests
-      run: dotnet test test/*.Unit/*.csproj -c ${{ env.CONFIGURATION }} --no-build --collect:"XPlat Code Coverage" -m
+      run: dotnet test tests/*.Unit/*.csproj -c ${{ env.CONFIGURATION }} --no-build --collect:"XPlat Code Coverage" -m
 
     - name: Upload code coverage results
       uses: codecov/codecov-action@v3
