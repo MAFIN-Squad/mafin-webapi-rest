@@ -2,12 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>net6.0;netstandard2.1</TargetFrameworks>
     <PackageId>Mafin.Web.Api.Rest</PackageId>
-    <PackageVersion></PackageVersion>
     <Description>Mafin REST API test automation package.</Description>
     <Authors>Epam Mafin Team</Authors>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="GitVersion.MsBuild" PrivateAssets="all" />
-  </ItemGroup>
 </Project>
