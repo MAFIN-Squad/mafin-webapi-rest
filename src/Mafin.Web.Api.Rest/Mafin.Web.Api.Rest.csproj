@@ -4,6 +4,7 @@
     <PackageId>Mafin.Web.Api.Rest</PackageId>
     <Description>MAFIN REST API test automation package</Description>
     <Authors>MAFIN Squad</Authors>
+    <Version></Version>
   </PropertyGroup>
 
   <ItemGroup>
