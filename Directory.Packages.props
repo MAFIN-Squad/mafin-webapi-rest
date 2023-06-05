@@ -12,7 +12,7 @@
     <PackageVersion Include="Moq" Version="4.18.4" />
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="9.1.0.70676" />
     <PackageVersion Include="StyleCop.Analyzers.Unstable" Version="1.2.0.435" />
-    <PackageVersion Include="WireMock.Net" Version="1.5.26" />
+    <PackageVersion Include="WireMock.Net" Version="1.5.27" />
     <PackageVersion Include="xunit" Version="2.4.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5" />
   </ItemGroup>
