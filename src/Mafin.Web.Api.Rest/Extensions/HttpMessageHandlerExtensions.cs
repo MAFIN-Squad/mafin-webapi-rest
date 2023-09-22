@@ -1,12 +1,12 @@
 namespace Mafin.Web.Api.Rest.Extensions;
 
 /// <summary>
-/// Provides extensions to HttpMessageHandler type.
+/// Provides extensions to <see cref="HttpMessageHandler"/>.
 /// </summary>
 internal static class HttpMessageHandlerExtensions
 {
     /// <summary>
-    /// Performs wrapping of request handlers via DeleagtingHandlers.
+    /// Performs wrapping of request handlers via <see cref="DelegatingHandler"/> instances.
     /// </summary>
     /// <param name="handler">Handler to wrap.</param>
     /// <param name="delegatingHandlers">Collection of handlers performing the wrapping.</param>
