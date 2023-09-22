@@ -26,7 +26,7 @@ public class BearerAuthHandlerTests
         };
 
         using TestBearerAuthHandler handler = new(_mockBearerTokenProvider.Object);
-        _ = await handler.PublicSendAsync(requestMessage).ConfigureAwait(false);
+        _ = await handler.PublicSendAsync(requestMessage);
 
         requestMessage.Headers.Authorization.Should().BeEquivalentTo(expectedHeader);
     }
