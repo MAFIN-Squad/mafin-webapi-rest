@@ -66,7 +66,7 @@ public class MafinHttpClientBuilderTests
     }
 
     [Fact]
-    public void WithAuthHandler_WnenNullCustomizationAction_ShouldThrow()
+    public void WithAuthHandler_WhenNullCustomizationAction_ShouldThrow()
     {
         Action<HttpClientHandler> authAction = null!;
         _builder = new MafinHttpClientBuilder(Url);
@@ -115,7 +115,7 @@ public class MafinHttpClientBuilderTests
     }
 
     [Fact]
-    public void WithJsonSerializerOptions_WnenNullCustomizationAction_ShouldThrow()
+    public void WithJsonSerializerOptions_WhenNullCustomizationAction_ShouldThrow()
     {
         Action<JsonSerializerOptions> optionsAction = null!;
         _builder = new MafinHttpClientBuilder(Url);

@@ -26,7 +26,7 @@ public class BearerAuthHandlerTests
         };
 
         using TestBearerAuthHandler handler = new(_mockBearerTokenProvider.Object);
-        _ = await handler.PublicSendAsync(requestMessage).ConfigureAwait(false);
+        _ = await handler.PublicSendAsync(requestMessage).ConfigureAwait(true);
 
         requestMessage.Headers.Authorization.Should().BeEquivalentTo(expectedHeader);
     }
@@ -42,13 +42,8 @@ public class BearerAuthHandlerTests
 }
 
 #pragma warning disable SA1402 // File may only contain a single type
-public class TestBearerAuthHandler : BearerAuthHandler
+public class TestBearerAuthHandler(IBearerTokenProvider tokenProvider) : BearerAuthHandler(tokenProvider)
 #pragma warning restore SA1402
 {
-    public TestBearerAuthHandler(IBearerTokenProvider tokenProvider)
-        : base(tokenProvider)
-    {
-    }
-
     public Task<HttpResponseMessage> PublicSendAsync(HttpRequestMessage request) => SendAsync(request, CancellationToken.None);
 }

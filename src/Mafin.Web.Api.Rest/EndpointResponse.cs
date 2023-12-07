@@ -6,17 +6,12 @@ namespace Mafin.Web.Api.Rest;
 /// <summary>
 /// Represents API response without content.
 /// </summary>
-public class EndpointResponse : IEndpointResponseMeta
+/// <remarks>
+/// Initializes a new instance of the <see cref="EndpointResponse"/> class.
+/// </remarks>
+/// <param name="httpResponseMessage">HTTP response message.</param>
+public class EndpointResponse(HttpResponseMessage httpResponseMessage) : IEndpointResponseMeta
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EndpointResponse"/> class.
-    /// </summary>
-    /// <param name="httpResponseMessage">HTTP response message.</param>
-    public EndpointResponse(HttpResponseMessage httpResponseMessage)
-    {
-        Response = httpResponseMessage;
-    }
-
     /// <inheritdoc/>
     public HttpResponseHeaders Headers => Response.Headers;
 
@@ -32,7 +27,7 @@ public class EndpointResponse : IEndpointResponseMeta
     /// <summary>
     /// Gets HTTP response message.
     /// </summary>
-    protected HttpResponseMessage Response { get; }
+    protected HttpResponseMessage Response { get; } = httpResponseMessage;
 
     /// <inheritdoc/>
     public void Dispose()

@@ -6,21 +6,16 @@ namespace Mafin.Web.Api.Rest;
 /// Represents API response with content data.
 /// </summary>
 /// <typeparam name="T">Content type.</typeparam>
-public class EndpointResponse<T> : EndpointResponse, IEndpointResponseContent<T>
+/// <remarks>
+/// Initializes a new instance of the <see cref="EndpointResponse{T}"/> class.
+/// </remarks>
+/// <param name="httpResponseMessage">HTTP response message.</param>
+/// <param name="content">HTTP response message content.</param>
+public class EndpointResponse<T>(HttpResponseMessage httpResponseMessage, T? content)
+    : EndpointResponse(httpResponseMessage), IEndpointResponseContent<T>
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EndpointResponse{T}"/> class.
-    /// </summary>
-    /// <param name="httpResponseMessage">HTTP response message.</param>
-    /// <param name="content">HTTP response message content.</param>
-    public EndpointResponse(HttpResponseMessage httpResponseMessage, T? content)
-        : base(httpResponseMessage)
-    {
-        Content = content;
-    }
-
     /// <inheritdoc/>
-    public T? Content { get; }
+    public T? Content { get; } = content;
 
     /// <inheritdoc/>
     public HttpContentHeaders? ContentHeaders => Response.Content?.Headers;

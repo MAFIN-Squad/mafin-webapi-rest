@@ -10,7 +10,7 @@ namespace Mafin.Web.Api.Rest;
 public class MafinHttpClientBuilder
 #pragma warning restore CA1001
 {
-    private readonly List<DelegatingHandler> _requestHandlers = new();
+    private readonly List<DelegatingHandler> _requestHandlers = [];
     private readonly Uri _baseAddress;
     private HttpClientHandler _authHandler = new();
     private JsonSerializerOptions? _options;
@@ -122,7 +122,7 @@ public class MafinHttpClientBuilder
     /// </summary>
     /// <returns><see cref="HttpMessageHandler"/> wrapping a handler chain.</returns>
     protected virtual HttpMessageHandler GetHandlerChain() =>
-        _requestHandlers.Any()
+        _requestHandlers.Count > 0
         ? _authHandler.WrapInto(_requestHandlers)
         : _authHandler;
 }

@@ -25,7 +25,7 @@ public class BasicAuthHandlerTests
         };
 
         using TestBasicAuthHandler handler = new(userName, password);
-        _ = await handler.PublicSendAsync(requestMessage).ConfigureAwait(false);
+        _ = await handler.PublicSendAsync(requestMessage).ConfigureAwait(true);
 
         requestMessage.Headers.Authorization.Should().BeEquivalentTo(expectedHeader);
     }
@@ -41,13 +41,8 @@ public class BasicAuthHandlerTests
 }
 
 #pragma warning disable SA1402 // File may only contain a single type
-public class TestBasicAuthHandler : BasicAuthHandler
+public class TestBasicAuthHandler(string userName, string password) : BasicAuthHandler(userName, password)
 #pragma warning restore SA1402
 {
-    public TestBasicAuthHandler(string userName, string password)
-        : base(userName, password)
-    {
-    }
-
     public Task<HttpResponseMessage> PublicSendAsync(HttpRequestMessage request) => SendAsync(request, CancellationToken.None);
 }
