@@ -40,8 +40,7 @@ public class MafinHttpClientBuilderTests
 
         var authHandlerMock = Substitute.For<HttpClientHandler>();
         var requestMock = Substitute.For<HttpRequestMessage>();
-
-        HttpResponseMessage responseMock = Substitute.For<HttpResponseMessage>();
+        var responseMock = Substitute.For<HttpResponseMessage>();
 
         typeof(HttpClientHandler).InvokeMember(sendMethodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.InvokeMethod, null, authHandlerMock, new object[] { requestMock, Arg.Any<CancellationToken>() }).Returns(responseMock);
 
