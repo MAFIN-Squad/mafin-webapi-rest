@@ -1,4 +1,7 @@
+using System.Reflection;
 using System.Text.Json;
+using Moq.Protected;
+using Moq;
 using NSubstitute;
 
 namespace Mafin.Web.Api.Rest.Tests.Unit;
@@ -30,27 +33,28 @@ public class MafinHttpClientBuilderTests
         client.BaseAddress.Should().Be(uri);
     }
 
-    // Note that WithAuthHandler_WhenHandlerPassed_ShouldDelegateHttpCallToSameHandler could not be re-written due to NSubstitute limitation
-    /*[Fact]
+    [Fact]
     public void WithAuthHandler_WhenHandlerPassed_ShouldDelegateHttpCallToSameHandler()
     {
         const string sendMethodName = "Send";
 
-        Mock<HttpClientHandler> authHandlerMock = new();
-        Mock<HttpRequestMessage> requestMock = new();
+        var authHandlerMock = Substitute.For<HttpClientHandler>();
+        var requestMock = Substitute.For<HttpRequestMessage>();
 
-        authHandlerMock.Protected()
-            .Setup<HttpResponseMessage>(sendMethodName, requestMock.Object, ItExpr.IsAny<CancellationToken>())
-            .Returns(new Mock<HttpResponseMessage>().Object)
-            .Verifiable();
+        HttpResponseMessage responseMock = Substitute.For<HttpResponseMessage>();
+
+        typeof(HttpClientHandler).InvokeMember(sendMethodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.InvokeMethod, null, authHandlerMock, new object[] { requestMock, Arg.Any<CancellationToken>() }).Returns(responseMock);
 
         _builder = new MafinHttpClientBuilder(Url);
-        var client = _builder.WithAuthHandler(authHandlerMock.Object).Build();
+        var client = _builder.WithAuthHandler(authHandlerMock).Build();
 
-        _ = client.Send(requestMock.Object);
+        _ = client.Send(requestMock);
 
-        authHandlerMock.Protected().Verify(sendMethodName, Times.Once(), requestMock.Object, ItExpr.IsAny<CancellationToken>());
-    }*/
+        Received.InOrder(() =>
+        {
+            typeof(HttpClientHandler).InvokeMember(sendMethodName,BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.InvokeMethod, null, authHandlerMock, new object[] { requestMock, Arg.Any<CancellationToken>() });
+        });
+    }
 
     [Fact]
     public void WithAuthHandler_WhenCustomizationActionPassed_ShouldInvokeAction()
