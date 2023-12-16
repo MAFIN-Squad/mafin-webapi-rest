@@ -6,7 +6,7 @@
     <PackageVersion Include="AutoFixture" Version="4.18.1" />
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
-    <PackageVersion Include="FluentAssertions.Analyzers" Version="0.26.0" />
+    <PackageVersion Include="FluentAssertions.Analyzers" Version="0.27.0" />
     <PackageVersion Include="Microsoft.CST.DevSkim" Version="1.0.22" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageVersion Include="Moq" Version="4.18.4" />
@@ -14,9 +14,9 @@
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="9.15.0.81779" />
     <PackageVersion Include="StyleCop.Analyzers.Unstable" Version="1.2.0.507" />
     <PackageVersion Include="System.Text.Json" Version="8.0.0" />
-    <PackageVersion Include="WireMock.Net" Version="1.5.41" />
-    <PackageVersion Include="xunit.analyzers" Version="1.6.0" />
-    <PackageVersion Include="xunit.core" Version="2.6.2" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.4" />
+    <PackageVersion Include="WireMock.Net" Version="1.5.44" />
+    <PackageVersion Include="xunit.analyzers" Version="1.7.0" />
+    <PackageVersion Include="xunit.core" Version="2.6.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.5" />
   </ItemGroup>
 </Project>
