@@ -1,4 +1,3 @@
-using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
 
@@ -38,5 +37,5 @@ public static class HttpContextExtensions
     /// <param name="options">JSON serializer configuration instance.</param>
     /// <returns><see cref="StringContent"/> representing JSON object.</returns>
     public static StringContent ToJson<T>(this T entity, JsonSerializerOptions? options = null) =>
-        new(JsonSerializer.Serialize(entity, options), Encoding.UTF8, MediaTypeNames.Application.Json);
+        new(JsonSerializer.Serialize(entity, options), Encoding.UTF8, "application/json");
 }

@@ -180,6 +180,7 @@ public class MafinHttpClient : HttpClient
         return new EndpointResponse<TO?>(response, await response.AsEntity<TO?>(JsonSerializerOptions).ConfigureAwait(false));
     }
 
+#if NETSTANDARD2_1_OR_GREATER
     /// <summary>
     /// Send a PATCH request to the specified Uri as an asynchronous operation.
     /// </summary>
@@ -228,6 +229,7 @@ public class MafinHttpClient : HttpClient
         var response = await PatchAsync(requestUri, content?.ToJson(JsonSerializerOptions), ResolveToken(cancellationToken)).ConfigureAwait(false);
         return new EndpointResponse<TO?>(response, await response.AsEntity<TO?>(JsonSerializerOptions).ConfigureAwait(false));
     }
+#endif
 
     /// <summary>
     /// Send a DELETE request to the specified Uri as an asynchronous operation.
