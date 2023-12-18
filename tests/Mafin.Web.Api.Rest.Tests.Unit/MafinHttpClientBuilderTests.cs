@@ -1,7 +1,6 @@
+using System.Globalization;
 using System.Reflection;
 using System.Text.Json;
-using Moq.Protected;
-using Moq;
 using NSubstitute;
 
 namespace Mafin.Web.Api.Rest.Tests.Unit;
@@ -42,16 +41,16 @@ public class MafinHttpClientBuilderTests
         var requestMock = Substitute.For<HttpRequestMessage>();
         var responseMock = Substitute.For<HttpResponseMessage>();
 
-        typeof(HttpClientHandler).InvokeMember(sendMethodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.InvokeMethod, null, authHandlerMock, new object[] { requestMock, Arg.Any<CancellationToken>() }).Returns(responseMock);
+        this.InvokeHandlerMethod(sendMethodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.InvokeMethod, null, authHandlerMock, new object[] { requestMock, Arg.Any<CancellationToken>() }, CultureInfo.InvariantCulture).Returns(responseMock);
 
         _builder = new MafinHttpClientBuilder(Url);
         var client = _builder.WithAuthHandler(authHandlerMock).Build();
 
-        _ = client.Send(requestMock);
+        client.Send(requestMock);
 
         Received.InOrder(() =>
         {
-            typeof(HttpClientHandler).InvokeMember(sendMethodName,BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.InvokeMethod, null, authHandlerMock, new object[] { requestMock, Arg.Any<CancellationToken>() });
+            this.InvokeHandlerMethod(sendMethodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.InvokeMethod, null, authHandlerMock, new object[] { requestMock, Arg.Any<CancellationToken>() }, CultureInfo.InvariantCulture);
         });
     }
 
@@ -124,4 +123,7 @@ public class MafinHttpClientBuilderTests
 
         action.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'serializerCustomizationAction')");
     }
+
+    private object? InvokeHandlerMethod(string methodName, BindingFlags flag, Binder? binder, HttpClientHandler authHandlerMock, object?[] objects, CultureInfo cultureInfo) =>
+        typeof(HttpClientHandler).InvokeMember(methodName, flag, binder, authHandlerMock, objects, cultureInfo);
 }
