@@ -180,7 +180,6 @@ public class MafinHttpClient : HttpClient
         return new EndpointResponse<TO?>(response, await response.AsEntity<TO?>(JsonSerializerOptions).ConfigureAwait(false));
     }
 
-#if NETSTANDARD2_1_OR_GREATER
     /// <summary>
     /// Send a PATCH request to the specified Uri as an asynchronous operation.
     /// </summary>
@@ -201,7 +200,7 @@ public class MafinHttpClient : HttpClient
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<EndpointResponse> SendPatchAsync<T>(Uri? requestUri, T? content, CancellationToken? cancellationToken = null) =>
-        new EndpointResponse(await PatchAsync(requestUri, content?.ToJson(JsonSerializerOptions), ResolveToken(cancellationToken)).ConfigureAwait(false));
+        new EndpointResponse(await GetCorrectPatchImplementationResponse(requestUri, content?.ToJson(JsonSerializerOptions), ResolveToken(cancellationToken)).ConfigureAwait(false));
 
     /// <summary>
     /// Send a PATCH request to the specified Uri as an asynchronous operation.
@@ -226,10 +225,9 @@ public class MafinHttpClient : HttpClient
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<EndpointResponse<TO?>> SendPatchAsync<TO, TI>(Uri? requestUri, TI? content, CancellationToken? cancellationToken = null)
     {
-        var response = await PatchAsync(requestUri, content?.ToJson(JsonSerializerOptions), ResolveToken(cancellationToken)).ConfigureAwait(false);
+        var response = await GetCorrectPatchImplementationResponse(requestUri, content?.ToJson(JsonSerializerOptions), ResolveToken(cancellationToken)).ConfigureAwait(false);
         return new EndpointResponse<TO?>(response, await response.AsEntity<TO?>(JsonSerializerOptions).ConfigureAwait(false));
     }
-#endif
 
     /// <summary>
     /// Send a DELETE request to the specified Uri as an asynchronous operation.
@@ -282,4 +280,15 @@ public class MafinHttpClient : HttpClient
 #pragma warning restore CA1054
 
     private static CancellationToken ResolveToken(CancellationToken? token) => token ?? CancellationToken.None;
+
+    // Added for interoperability between targets
+    private async Task<HttpResponseMessage> GetCorrectPatchImplementationResponse(Uri? requestUri, HttpContent? content, CancellationToken cancellationToken)
+    {
+#if NETSTANDARD2_1_OR_GREATER
+        var response = await PatchAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
+#else
+        var response = await SendAsync(new HttpRequestMessage(new HttpMethod("PATCH"), requestUri) { Content = content }, cancellationToken).ConfigureAwait(false);
+#endif
+        return response;
+    }
 }
