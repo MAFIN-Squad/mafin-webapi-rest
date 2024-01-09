@@ -9,8 +9,8 @@ namespace Mafin.Web.Api.Rest.Authentication;
 /// <remarks>
 /// Initializes a new instance of the <see cref="BasicAuthHandler"/> class.
 /// </remarks>
-/// <param name="userName">UserName value.</param>
-/// <param name="password">user password value.</param>
+/// <param name="userName">User name value.</param>
+/// <param name="password">User password value.</param>
 public class BasicAuthHandler(string userName, string password) : BaseAuthHandler
 {
     /// <inheritdoc cref="BaseAuthHandler.GetAuthHeaderValue"/>
