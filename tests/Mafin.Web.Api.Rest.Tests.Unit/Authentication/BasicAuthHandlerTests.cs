@@ -25,7 +25,7 @@ public class BasicAuthHandlerTests
         };
 
         using TestBasicAuthHandler handler = new(userName, password);
-        _ = await handler.PublicSendAsync(requestMessage).ConfigureAwait(true);
+        _ = await handler.PublicSendAsync(requestMessage);
 
         requestMessage.Headers.Authorization.Should().BeEquivalentTo(expectedHeader);
     }
