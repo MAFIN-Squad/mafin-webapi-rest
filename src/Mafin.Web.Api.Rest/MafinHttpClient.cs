@@ -200,7 +200,7 @@ public class MafinHttpClient : HttpClient
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<EndpointResponse> SendPatchAsync<T>(Uri? requestUri, T? content, CancellationToken? cancellationToken = null) =>
-        new EndpointResponse(await GetCorrectPatchImplementationResponse(requestUri, content?.ToJson(JsonSerializerOptions), ResolveToken(cancellationToken)).ConfigureAwait(false));
+        new EndpointResponse(await PatchAsync(requestUri, content?.ToJson(JsonSerializerOptions), ResolveToken(cancellationToken)).ConfigureAwait(false));
 
     /// <summary>
     /// Send a PATCH request to the specified Uri as an asynchronous operation.
@@ -225,7 +225,7 @@ public class MafinHttpClient : HttpClient
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<EndpointResponse<TO?>> SendPatchAsync<TO, TI>(Uri? requestUri, TI? content, CancellationToken? cancellationToken = null)
     {
-        var response = await GetCorrectPatchImplementationResponse(requestUri, content?.ToJson(JsonSerializerOptions), ResolveToken(cancellationToken)).ConfigureAwait(false);
+        var response = await PatchAsync(requestUri, content?.ToJson(JsonSerializerOptions), ResolveToken(cancellationToken)).ConfigureAwait(false);
         return new EndpointResponse<TO?>(response, await response.AsEntity<TO?>(JsonSerializerOptions).ConfigureAwait(false));
     }
 
@@ -281,14 +281,13 @@ public class MafinHttpClient : HttpClient
 
     private static CancellationToken ResolveToken(CancellationToken? token) => token ?? CancellationToken.None;
 
-    // Added for interoperability between targets
-    private async Task<HttpResponseMessage> GetCorrectPatchImplementationResponse(Uri? requestUri, HttpContent? content, CancellationToken cancellationToken)
-    {
-#if NETSTANDARD2_1_OR_GREATER
-        var response = await PatchAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
-#else
-        var response = await SendAsync(new HttpRequestMessage(new HttpMethod("PATCH"), requestUri) { Content = content }, cancellationToken).ConfigureAwait(false);
-#endif
-        return response;
-    }
+    /// <summary>
+    /// Back-port of PatchAsync() introduced in .NET Standard2.1.
+    /// </summary>
+    /// <param name="requestUri">The Url the request is sent to.</param>
+    /// <param name="content">Request body.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    private async Task<HttpResponseMessage> PatchAsync(Uri? requestUri, HttpContent? content, CancellationToken cancellationToken) =>
+        await SendAsync(new HttpRequestMessage(new HttpMethod("PATCH"), requestUri) { Content = content }, cancellationToken).ConfigureAwait(false);
 }
