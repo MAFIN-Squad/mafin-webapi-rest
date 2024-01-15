@@ -21,7 +21,7 @@ public class BasicAuthHandlerTests
         AuthenticationHeaderValue expectedHeader = new("Basic", Convert.ToBase64String(Encoding.Default.GetBytes($"{userName}:{password}")));
         using HttpRequestMessage requestMessage = new()
         {
-            RequestUri = new Uri(GetMockedUrl()!)
+            RequestUri = new Uri(GetMockedUrl())
         };
 
         using TestBasicAuthHandler handler = new(userName, password);
@@ -30,13 +30,13 @@ public class BasicAuthHandlerTests
         requestMessage.Headers.Authorization.Should().BeEquivalentTo(expectedHeader);
     }
 
-    private static string? GetMockedUrl()
+    private static string GetMockedUrl()
     {
         var server = WireMockServer.Start();
         server.Given(Request.Create().UsingGet())
             .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.OK));
 
-        return server.Url;
+        return server.Url!;
     }
 }
 

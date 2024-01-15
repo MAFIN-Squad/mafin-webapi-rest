@@ -22,7 +22,7 @@ public class BearerAuthHandlerTests
         AuthenticationHeaderValue expectedHeader = new("Bearer", token);
         using HttpRequestMessage requestMessage = new()
         {
-            RequestUri = new Uri(GetMockedUrl()!)
+            RequestUri = new Uri(GetMockedUrl())
         };
 
         using TestBearerAuthHandler handler = new(_mockBearerTokenProvider.Object);
@@ -31,13 +31,13 @@ public class BearerAuthHandlerTests
         requestMessage.Headers.Authorization.Should().BeEquivalentTo(expectedHeader);
     }
 
-    private static string? GetMockedUrl()
+    private static string GetMockedUrl()
     {
         var server = WireMockServer.Start();
         server.Given(Request.Create().UsingGet())
             .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.OK));
 
-        return server.Url;
+        return server.Url!;
     }
 }
 
