@@ -6,14 +6,17 @@ namespace Mafin.Web.Api.Rest;
 /// <summary>
 /// Type providing possibility to build <see cref="MafinHttpClient"/> with required capabilities.
 /// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="MafinHttpClientBuilder"/> class.
+/// </remarks>
+/// <param name="baseAddress">Application base address value.</param>
 #pragma warning disable CA1001 // Types that own disposable fields should be disposable - other type owns dispose.
-public class MafinHttpClientBuilder
+public class MafinHttpClientBuilder(Uri baseAddress)
 #pragma warning restore CA1001
 {
     private readonly List<DelegatingHandler> _requestHandlers = [];
-    private readonly Uri _baseAddress;
     private HttpClientHandler _authHandler = new();
-    private JsonSerializerOptions? _options;
+    private JsonSerializerOptions _options = JsonSerializerOptions.Default;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MafinHttpClientBuilder"/> class.
@@ -25,22 +28,13 @@ public class MafinHttpClientBuilder
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MafinHttpClientBuilder"/> class.
-    /// </summary>
-    /// <param name="baseAddress">Application base address value.</param>
-    public MafinHttpClientBuilder(Uri baseAddress)
-    {
-        _baseAddress = baseAddress;
-    }
-
-    /// <summary>
     /// Adds authentication handler into build chain.
     /// </summary>
     /// <param name="handler">Authentication handler.</param>
     /// <returns><see cref="MafinHttpClientBuilder"/> instance.</returns>
     public MafinHttpClientBuilder WithAuthHandler(HttpClientHandler handler)
     {
-        _authHandler = handler;
+        _authHandler = handler ?? throw new ArgumentNullException(nameof(handler));
         return this;
     }
 
@@ -68,7 +62,7 @@ public class MafinHttpClientBuilder
     /// <returns><see cref="MafinHttpClientBuilder"/> instance.</returns>
     public MafinHttpClientBuilder WithJsonSerializerOptions(JsonSerializerOptions options)
     {
-        _options = options;
+        _options = options ?? throw new ArgumentNullException(nameof(options));
         return this;
     }
 
@@ -85,7 +79,7 @@ public class MafinHttpClientBuilder
             throw new ArgumentNullException(nameof(serializerCustomizationAction));
         }
 
-        serializerCustomizationAction(_options ?? new());
+        serializerCustomizationAction(_options);
         return this;
     }
 
@@ -113,8 +107,8 @@ public class MafinHttpClientBuilder
     /// <returns><see cref="MafinHttpClient"/> instance.</returns>
     public virtual MafinHttpClient Build() => new(GetHandlerChain())
     {
-        BaseAddress = _baseAddress,
-        JsonSerializerOptions = _options
+        BaseAddress = baseAddress,
+        JsonSerializerOptions = _options,
     };
 
     /// <summary>
