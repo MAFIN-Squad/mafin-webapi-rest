@@ -39,7 +39,7 @@ public class MafinHttpClient : HttpClient
     /// <summary>
     /// Gets or sets options for <see cref="JsonSerializer"/>.
     /// </summary>
-    public JsonSerializerOptions? JsonSerializerOptions { get; set; }
+    public JsonSerializerOptions JsonSerializerOptions { get; set; } = JsonSerializerOptions.Default;
 
     /// <summary>
     /// Send a GET request to the specified Uri as an asynchronous operation.
@@ -47,8 +47,8 @@ public class MafinHttpClient : HttpClient
     /// <param name="requestUrl">The Url the request is sent to.</param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<EndpointResponse> SendGetAsync(string? requestUrl, CancellationToken? cancellationToken = null) =>
-        await SendGetAsync(CreateUri(requestUrl), cancellationToken).ConfigureAwait(false);
+    public Task<EndpointResponse> SendGetAsync(string? requestUrl, CancellationToken? cancellationToken = null) =>
+        SendGetAsync(CreateUri(requestUrl), cancellationToken);
 
     /// <summary>
     /// Send a GET request to the specified Uri as an asynchronous operation.
@@ -66,8 +66,8 @@ public class MafinHttpClient : HttpClient
     /// <param name="requestUrl">The Url the request is sent to.</param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<EndpointResponse<T?>> SendGetAsync<T>(string? requestUrl, CancellationToken? cancellationToken = null) =>
-        await SendGetAsync<T?>(CreateUri(requestUrl), cancellationToken).ConfigureAwait(false);
+    public Task<EndpointResponse<T?>> SendGetAsync<T>(string? requestUrl, CancellationToken? cancellationToken = null) =>
+        SendGetAsync<T?>(CreateUri(requestUrl), cancellationToken);
 
     /// <summary>
     /// Send a GET request to the specified Uri as an asynchronous operation.
@@ -90,8 +90,8 @@ public class MafinHttpClient : HttpClient
     /// <param name="content">Request body.</param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<EndpointResponse> SendPostAsync<T>(string? requestUrl, T? content, CancellationToken? cancellationToken = null) =>
-        await SendPostAsync(CreateUri(requestUrl), content, cancellationToken).ConfigureAwait(false);
+    public Task<EndpointResponse> SendPostAsync<T>(string? requestUrl, T? content, CancellationToken? cancellationToken = null) =>
+        SendPostAsync(CreateUri(requestUrl), content, cancellationToken);
 
     /// <summary>
     /// Send a POST request to the specified Uri as an asynchronous operation.
@@ -113,8 +113,8 @@ public class MafinHttpClient : HttpClient
     /// <param name="content">Request body.</param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<EndpointResponse<TO?>> SendPostAsync<TO, TI>(string? requestUrl, TI? content, CancellationToken? cancellationToken = null) =>
-        await SendPostAsync<TO?, TI?>(CreateUri(requestUrl), content, cancellationToken).ConfigureAwait(false);
+    public Task<EndpointResponse<TO?>> SendPostAsync<TO, TI>(string? requestUrl, TI? content, CancellationToken? cancellationToken = null) =>
+        SendPostAsync<TO?, TI?>(CreateUri(requestUrl), content, cancellationToken);
 
     /// <summary>
     /// Send a POST request to the specified Uri as an asynchronous operation.
@@ -139,8 +139,8 @@ public class MafinHttpClient : HttpClient
     /// <param name="content">Request body.</param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<EndpointResponse> SendPutAsync<T>(string? requestUrl, T? content, CancellationToken? cancellationToken = null) =>
-        await SendPutAsync(CreateUri(requestUrl), content, cancellationToken).ConfigureAwait(false);
+    public Task<EndpointResponse> SendPutAsync<T>(string? requestUrl, T? content, CancellationToken? cancellationToken = null) =>
+        SendPutAsync(CreateUri(requestUrl), content, cancellationToken);
 
     /// <summary>
     /// Send a PUT request to the specified Uri as an asynchronous operation.
@@ -162,8 +162,8 @@ public class MafinHttpClient : HttpClient
     /// <param name="content">Request body.</param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<EndpointResponse<TO?>> SendPutAsync<TO, TI>(string? requestUrl, TI? content, CancellationToken? cancellationToken = null) =>
-        await SendPutAsync<TO?, TI?>(CreateUri(requestUrl), content, cancellationToken).ConfigureAwait(false);
+    public Task<EndpointResponse<TO?>> SendPutAsync<TO, TI>(string? requestUrl, TI? content, CancellationToken? cancellationToken = null) =>
+        SendPutAsync<TO?, TI?>(CreateUri(requestUrl), content, cancellationToken);
 
     /// <summary>
     /// Send a PUT request to the specified Uri as an asynchronous operation.
@@ -188,8 +188,8 @@ public class MafinHttpClient : HttpClient
     /// <param name="content">Request body.</param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<EndpointResponse> SendPatchAsync<T>(string? requestUrl, T? content, CancellationToken? cancellationToken = null) =>
-        await SendPatchAsync(CreateUri(requestUrl), content, cancellationToken).ConfigureAwait(false);
+    public Task<EndpointResponse> SendPatchAsync<T>(string? requestUrl, T? content, CancellationToken? cancellationToken = null) =>
+        SendPatchAsync(CreateUri(requestUrl), content, cancellationToken);
 
     /// <summary>
     /// Send a PATCH request to the specified Uri as an asynchronous operation.
@@ -211,8 +211,8 @@ public class MafinHttpClient : HttpClient
     /// <param name="content">Request body.</param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<EndpointResponse<TO?>> SendPatchAsync<TO, TI>(string? requestUrl, TI? content, CancellationToken? cancellationToken = null) =>
-        await SendPatchAsync<TO?, TI?>(CreateUri(requestUrl), content, cancellationToken).ConfigureAwait(false);
+    public Task<EndpointResponse<TO?>> SendPatchAsync<TO, TI>(string? requestUrl, TI? content, CancellationToken? cancellationToken = null) =>
+        SendPatchAsync<TO?, TI?>(CreateUri(requestUrl), content, cancellationToken);
 
     /// <summary>
     /// Send a PATCH request to the specified Uri as an asynchronous operation.
@@ -235,8 +235,8 @@ public class MafinHttpClient : HttpClient
     /// <param name="requestUrl">The Url the request is sent to.</param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<EndpointResponse> SendDeleteAsync(string? requestUrl, CancellationToken? cancellationToken = null) =>
-        await SendDeleteAsync(CreateUri(requestUrl), cancellationToken).ConfigureAwait(false);
+    public Task<EndpointResponse> SendDeleteAsync(string? requestUrl, CancellationToken? cancellationToken = null) =>
+        SendDeleteAsync(CreateUri(requestUrl), cancellationToken);
 
     /// <summary>
     /// Send a DELETE request to the specified Uri as an asynchronous operation.
@@ -254,8 +254,8 @@ public class MafinHttpClient : HttpClient
     /// <param name="requestUrl">The Url the request is sent to.</param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<EndpointResponse<T?>> SendDeleteAsync<T>(string? requestUrl, CancellationToken? cancellationToken = null) =>
-        await SendDeleteAsync<T?>(CreateUri(requestUrl), cancellationToken).ConfigureAwait(false);
+    public Task<EndpointResponse<T?>> SendDeleteAsync<T>(string? requestUrl, CancellationToken? cancellationToken = null) =>
+        SendDeleteAsync<T?>(CreateUri(requestUrl), cancellationToken);
 
     /// <summary>
     /// Send a DELETE request to the specified Uri as an asynchronous operation.
@@ -288,6 +288,6 @@ public class MafinHttpClient : HttpClient
     /// <param name="content">Request body.</param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    private async Task<HttpResponseMessage> PatchAsync(Uri? requestUri, HttpContent? content, CancellationToken cancellationToken) =>
-        await SendAsync(new HttpRequestMessage(new HttpMethod("PATCH"), requestUri) { Content = content }, cancellationToken).ConfigureAwait(false);
+    private Task<HttpResponseMessage> PatchAsync(Uri? requestUri, HttpContent? content, CancellationToken cancellationToken) =>
+        SendAsync(new HttpRequestMessage(new HttpMethod("PATCH"), requestUri) { Content = content }, cancellationToken);
 }
