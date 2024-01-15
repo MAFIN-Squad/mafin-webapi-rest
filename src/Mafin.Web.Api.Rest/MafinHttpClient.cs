@@ -282,7 +282,7 @@ public class MafinHttpClient : HttpClient
     private static CancellationToken ResolveToken(CancellationToken? token) => token ?? CancellationToken.None;
 
     /// <summary>
-    /// Back-port of PatchAsync() introduced in .NET Standard2.1.
+    /// Back-port of PatchAsync() introduced in .NET Standard 2.1.
     /// </summary>
     /// <param name="requestUri">The Url the request is sent to.</param>
     /// <param name="content">Request body.</param>
