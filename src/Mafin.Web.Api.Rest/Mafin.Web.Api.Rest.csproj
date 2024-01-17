@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net7.0;net6.0;netstandard2.1</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Mafin.Web.Api.Rest</PackageId>
     <Description>MAFIN REST API test automation package</Description>
     <Authors>MAFIN Squad</Authors>
@@ -8,10 +8,12 @@
     <RepositoryUrl>https://github.com/MAFIN-Squad/mafin-webapi-rest</RepositoryUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="$(MSBuildProjectName).Tests.Unit" />
+
+    <PackageReference Include="System.Text.Json" />
 
     <None Include="..\..\LICENSE" Pack="True" PackagePath="\" Visible="False" />
     <None Include="..\..\README.md" Pack="True" PackagePath="\" Visible="False" />

@@ -21,33 +21,28 @@ public class BasicAuthHandlerTests
         AuthenticationHeaderValue expectedHeader = new("Basic", Convert.ToBase64String(Encoding.Default.GetBytes($"{userName}:{password}")));
         using HttpRequestMessage requestMessage = new()
         {
-            RequestUri = new Uri(GetMockedUrl()!)
+            RequestUri = new Uri(GetMockedUrl())
         };
 
         using TestBasicAuthHandler handler = new(userName, password);
-        _ = await handler.PublicSendAsync(requestMessage).ConfigureAwait(false);
+        _ = await handler.PublicSendAsync(requestMessage);
 
         requestMessage.Headers.Authorization.Should().BeEquivalentTo(expectedHeader);
     }
 
-    private static string? GetMockedUrl()
+    private static string GetMockedUrl()
     {
         var server = WireMockServer.Start();
         server.Given(Request.Create().UsingGet())
             .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.OK));
 
-        return server.Url;
+        return server.Url!;
     }
 }
 
 #pragma warning disable SA1402 // File may only contain a single type
-public class TestBasicAuthHandler : BasicAuthHandler
+public class TestBasicAuthHandler(string userName, string password) : BasicAuthHandler(userName, password)
 #pragma warning restore SA1402
 {
-    public TestBasicAuthHandler(string userName, string password)
-        : base(userName, password)
-    {
-    }
-
     public Task<HttpResponseMessage> PublicSendAsync(HttpRequestMessage request) => SendAsync(request, CancellationToken.None);
 }
