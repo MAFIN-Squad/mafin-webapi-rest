@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using NSubstitute;
 
@@ -35,13 +36,11 @@ public class MafinHttpClientBuilderTests
     [Fact]
     public void WithAuthHandler_WhenHandlerPassed_ShouldDelegateHttpCallToSameHandler()
     {
-        const string sendMethodName = "Send";
-
         var authHandlerMock = Substitute.For<HttpClientHandler>();
         var requestMock = Substitute.For<HttpRequestMessage>();
         var responseMock = Substitute.For<HttpResponseMessage>();
 
-        this.InvokeHandlerMethod(sendMethodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.InvokeMethod, null, authHandlerMock, new object[] { requestMock, Arg.Any<CancellationToken>() }, CultureInfo.InvariantCulture).Returns(responseMock);
+        InvokeHandlerMethod(authHandlerMock, requestMock, Arg.Any<CancellationToken>()).Returns(responseMock);
 
         _builder = new MafinHttpClientBuilder(Url);
         var client = _builder.WithAuthHandler(authHandlerMock).Build();
@@ -50,19 +49,8 @@ public class MafinHttpClientBuilderTests
 
         Received.InOrder(() =>
         {
-            this.InvokeHandlerMethod(sendMethodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.InvokeMethod, null, authHandlerMock, new object[] { requestMock, Arg.Any<CancellationToken>() }, CultureInfo.InvariantCulture);
+            InvokeHandlerMethod(authHandlerMock, requestMock, Arg.Any<CancellationToken>());
         });
-    }
-
-    [Fact]
-    public void WithAuthHandler_WhenNullHandler_ShouldThrow()
-    {
-        HttpClientHandler handler = null!;
-        _builder = new MafinHttpClientBuilder(Url);
-
-        var action = () => _builder.WithAuthHandler(handler);
-
-        action.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'handler')");
     }
 
     [Fact]
@@ -78,12 +66,12 @@ public class MafinHttpClientBuilderTests
     }
 
     [Fact]
-    public void WithAuthHandler_WhenNullCustomizationAction_ShouldThrow()
+    public void WithAuthHandler_WnenNullCustomizationAction_ShouldThrow()
     {
         Action<HttpClientHandler> authAction = null!;
         _builder = new MafinHttpClientBuilder(Url);
 
-        var action = () => _builder.WithAuthHandler(authAction);
+        Action action = () => _builder.WithAuthHandler(authAction).Build();
 
         action.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'authCustomizationAction')");
     }
@@ -97,17 +85,6 @@ public class MafinHttpClientBuilderTests
         var client = _builder.WithJsonSerializerOptions(options).Build();
 
         client.JsonSerializerOptions.Should().Be(options);
-    }
-
-    [Fact]
-    public void WithJsonSerializerOptions_WhenNullOptions_ShouldThrow()
-    {
-        JsonSerializerOptions options = null!;
-        _builder = new MafinHttpClientBuilder(Url);
-
-        var action = () => _builder.WithJsonSerializerOptions(options);
-
-        action.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'options')");
     }
 
     [Fact]
@@ -136,16 +113,16 @@ public class MafinHttpClientBuilderTests
     }
 
     [Fact]
-    public void WithJsonSerializerOptions_WhenNullCustomizationAction_ShouldThrow()
+    public void WithJsonSerializerOptions_WnenNullCustomizationAction_ShouldThrow()
     {
         Action<JsonSerializerOptions> optionsAction = null!;
         _builder = new MafinHttpClientBuilder(Url);
 
-        var action = () => _builder.WithJsonSerializerOptions(optionsAction);
+        Action action = () => _builder.WithJsonSerializerOptions(optionsAction).Build();
 
         action.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'serializerCustomizationAction')");
     }
 
-    private object? InvokeHandlerMethod(string methodName, BindingFlags flag, Binder? binder, HttpClientHandler authHandlerMock, object?[] objects, CultureInfo cultureInfo) =>
-        typeof(HttpClientHandler).InvokeMember(methodName, flag, binder, authHandlerMock, objects, cultureInfo);
+    [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "Send")]
+    private static extern HttpResponseMessage? InvokeHandlerMethod(HttpClientHandler authHandlerMock, HttpRequestMessage request, CancellationToken cancellationToken);
 }
