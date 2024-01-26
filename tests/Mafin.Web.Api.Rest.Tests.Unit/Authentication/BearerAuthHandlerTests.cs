@@ -22,7 +22,7 @@ public class BearerAuthHandlerTests
         AuthenticationHeaderValue expectedHeader = new("Bearer", token);
         using HttpRequestMessage requestMessage = new()
         {
-            RequestUri = new Uri(GetMockedUrl()!)
+            RequestUri = new Uri(GetMockedUrl())
         };
 
         using TestBearerAuthHandler handler = new(_mockBearerTokenProvider);
@@ -38,18 +38,13 @@ public class BearerAuthHandlerTests
         server.Given(Request.Create().UsingGet())
             .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.OK));
 
-        return server.Url;
+        return server.Url!;
     }
 }
 
 #pragma warning disable SA1402 // File may only contain a single type
-public class TestBearerAuthHandler : BearerAuthHandler
+public class TestBearerAuthHandler(IBearerTokenProvider tokenProvider) : BearerAuthHandler(tokenProvider)
 #pragma warning restore SA1402
 {
-    public TestBearerAuthHandler(IBearerTokenProvider tokenProvider)
-        : base(tokenProvider)
-    {
-    }
-
     public Task<HttpResponseMessage> PublicSendAsync(HttpRequestMessage request) => SendAsync(request, CancellationToken.None);
 }

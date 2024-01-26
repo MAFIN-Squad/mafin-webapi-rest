@@ -55,6 +55,17 @@ public class MafinHttpClientBuilderTests
     }
 
     [Fact]
+    public void WithAuthHandler_WhenNullHandler_ShouldThrow()
+    {
+        HttpClientHandler handler = null!;
+        _builder = new MafinHttpClientBuilder(Url);
+
+        var action = () => _builder.WithAuthHandler(handler);
+
+        action.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'handler')");
+    }
+
+    [Fact]
     public void WithAuthHandler_WhenCustomizationActionPassed_ShouldInvokeAction()
     {
         var actionMock = Substitute.For<Action<HttpClientHandler>>();
@@ -67,12 +78,12 @@ public class MafinHttpClientBuilderTests
     }
 
     [Fact]
-    public void WithAuthHandler_WnenNullCustomizationAction_ShouldThrow()
+    public void WithAuthHandler_WhenNullCustomizationAction_ShouldThrow()
     {
         Action<HttpClientHandler> authAction = null!;
         _builder = new MafinHttpClientBuilder(Url);
 
-        Action action = () => _builder.WithAuthHandler(authAction).Build();
+        var action = () => _builder.WithAuthHandler(authAction);
 
         action.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'authCustomizationAction')");
     }
@@ -86,6 +97,17 @@ public class MafinHttpClientBuilderTests
         var client = _builder.WithJsonSerializerOptions(options).Build();
 
         client.JsonSerializerOptions.Should().Be(options);
+    }
+
+    [Fact]
+    public void WithJsonSerializerOptions_WhenNullOptions_ShouldThrow()
+    {
+        JsonSerializerOptions options = null!;
+        _builder = new MafinHttpClientBuilder(Url);
+
+        var action = () => _builder.WithJsonSerializerOptions(options);
+
+        action.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'options')");
     }
 
     [Fact]
@@ -114,12 +136,12 @@ public class MafinHttpClientBuilderTests
     }
 
     [Fact]
-    public void WithJsonSerializerOptions_WnenNullCustomizationAction_ShouldThrow()
+    public void WithJsonSerializerOptions_WhenNullCustomizationAction_ShouldThrow()
     {
         Action<JsonSerializerOptions> optionsAction = null!;
         _builder = new MafinHttpClientBuilder(Url);
 
-        Action action = () => _builder.WithJsonSerializerOptions(optionsAction).Build();
+        var action = () => _builder.WithJsonSerializerOptions(optionsAction);
 
         action.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'serializerCustomizationAction')");
     }
