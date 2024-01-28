@@ -1,6 +1,6 @@
 using FluentAssertions.Execution;
 using Mafin.Web.Api.Rest.Extensions;
-using Moq;
+using NSubstitute;
 
 namespace Mafin.Web.Api.Rest.Tests.Unit.Extensions;
 
@@ -10,9 +10,8 @@ public class HttpMessageHandlerExtensionsTests
     public void WrapInto_WhenHandlerPassed_ShouldWrapIntoInnerHandler()
     {
         using SocketsHttpHandler handler = new();
-        Mock<DelegatingHandler> delegatingHandlerMock = new();
 
-        var resultingHandler = handler.WrapInto(new[] { delegatingHandlerMock.Object });
+        var resultingHandler = handler.WrapInto(new[] { Substitute.For<DelegatingHandler>() });
 
         resultingHandler.Should().BeAssignableTo<DelegatingHandler>();
         resultingHandler.As<DelegatingHandler>().InnerHandler.Should().BeEquivalentTo(handler);
@@ -22,16 +21,16 @@ public class HttpMessageHandlerExtensionsTests
     public void WrapInto_WhenMultipleHandlersPassed_ShouldWrapInCorrectOrder()
     {
         using SocketsHttpHandler handler = new();
-        Mock<DelegatingHandler> firstDelegatingHandlerMock = new();
-        Mock<DelegatingHandler> secondDelegatingHandlerMock = new();
+        var firstDelegatingHandlerMock = Substitute.For<DelegatingHandler>();
+        var secondDelegatingHandlerMock = Substitute.For<DelegatingHandler>();
 
-        var resultingHandler = handler.WrapInto(new[] { firstDelegatingHandlerMock.Object, secondDelegatingHandlerMock.Object });
+        var resultingHandler = handler.WrapInto(new[] { firstDelegatingHandlerMock, secondDelegatingHandlerMock });
 
         resultingHandler.Should().BeAssignableTo<DelegatingHandler>();
         using (new AssertionScope())
         {
-            resultingHandler.As<DelegatingHandler>().Should().Be(firstDelegatingHandlerMock.Object);
-            resultingHandler.As<DelegatingHandler>().InnerHandler.Should().BeEquivalentTo(secondDelegatingHandlerMock.Object);
+            resultingHandler.As<DelegatingHandler>().Should().Be(firstDelegatingHandlerMock);
+            resultingHandler.As<DelegatingHandler>().InnerHandler.Should().BeEquivalentTo(secondDelegatingHandlerMock);
         }
     }
 }

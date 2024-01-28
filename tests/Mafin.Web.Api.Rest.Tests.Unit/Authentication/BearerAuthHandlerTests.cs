@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using AutoFixture;
 using Mafin.Web.Api.Rest.Authentication;
-using Moq;
+using NSubstitute;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -12,20 +12,20 @@ namespace Mafin.Web.Api.Rest.Tests.Unit.Authentication;
 public class BearerAuthHandlerTests
 {
     private readonly Fixture _fixture = new();
-    private readonly Mock<IBearerTokenProvider> _mockBearerTokenProvider = new();
+    private readonly IBearerTokenProvider _bearerTokenProviderMock = Substitute.For<IBearerTokenProvider>();
 
     [Fact]
     public async Task SendAsync_WhenPassedTokenProvider_ShouldSetHeader()
     {
         var token = _fixture.Create<string>();
-        _mockBearerTokenProvider.Setup(x => x.GetBearerToken()).Returns(token);
+        _ = _bearerTokenProviderMock.GetBearerToken().Returns(token);
         AuthenticationHeaderValue expectedHeader = new("Bearer", token);
         using HttpRequestMessage requestMessage = new()
         {
             RequestUri = new Uri(GetMockedUrl())
         };
 
-        using TestBearerAuthHandler handler = new(_mockBearerTokenProvider.Object);
+        using TestBearerAuthHandler handler = new(_bearerTokenProviderMock);
         _ = await handler.PublicSendAsync(requestMessage);
 
         requestMessage.Headers.Authorization.Should().BeEquivalentTo(expectedHeader);
@@ -39,11 +39,9 @@ public class BearerAuthHandlerTests
 
         return server.Url!;
     }
-}
 
-#pragma warning disable SA1402 // File may only contain a single type
-public class TestBearerAuthHandler(IBearerTokenProvider tokenProvider) : BearerAuthHandler(tokenProvider)
-#pragma warning restore SA1402
-{
-    public Task<HttpResponseMessage> PublicSendAsync(HttpRequestMessage request) => SendAsync(request, CancellationToken.None);
+    private sealed class TestBearerAuthHandler(IBearerTokenProvider tokenProvider) : BearerAuthHandler(tokenProvider)
+    {
+        public Task<HttpResponseMessage> PublicSendAsync(HttpRequestMessage request) => SendAsync(request, CancellationToken.None);
+    }
 }

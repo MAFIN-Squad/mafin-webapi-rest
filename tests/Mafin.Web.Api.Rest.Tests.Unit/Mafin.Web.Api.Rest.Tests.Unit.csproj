@@ -9,7 +9,7 @@
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="FluentAssertions.Analyzers" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="Moq" />
+    <PackageReference Include="NSubstitute" />
     <PackageReference Include="WireMock.Net" />
     <PackageReference Include="xunit.analyzers" />
     <PackageReference Include="xunit.core" />

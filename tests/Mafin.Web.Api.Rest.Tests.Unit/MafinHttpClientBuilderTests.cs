@@ -1,13 +1,12 @@
+using System.Runtime.CompilerServices;
 using System.Text.Json;
-using Moq;
-using Moq.Protected;
+using NSubstitute;
 
 namespace Mafin.Web.Api.Rest.Tests.Unit;
 
 public class MafinHttpClientBuilderTests
 {
     private const string Url = "https://example.local";
-
     private MafinHttpClientBuilder? _builder;
 
     [Fact]
@@ -34,31 +33,26 @@ public class MafinHttpClientBuilderTests
     [Fact]
     public void WithAuthHandler_WhenHandlerPassed_ShouldDelegateHttpCallToSameHandler()
     {
-        const string sendMethodName = "Send";
-
-        Mock<HttpClientHandler> authHandlerMock = new();
-        Mock<HttpRequestMessage> requestMock = new();
-
-        authHandlerMock.Protected()
-            .Setup<HttpResponseMessage>(sendMethodName, requestMock.Object, ItExpr.IsAny<CancellationToken>())
-            .Returns(new Mock<HttpResponseMessage>().Object)
-            .Verifiable();
-
         _builder = new MafinHttpClientBuilder(Url);
-        var client = _builder.WithAuthHandler(authHandlerMock.Object).Build();
+        var authHandlerMock = Substitute.For<HttpClientHandler>();
+        var requestMock = Substitute.For<HttpRequestMessage>();
+        var client = _builder.WithAuthHandler(authHandlerMock).Build();
+        _ = InvokeHandlerSendMethod(authHandlerMock, requestMock, Arg.Any<CancellationToken>()).Returns(Substitute.For<HttpResponseMessage>());
 
-        _ = client.Send(requestMock.Object);
+        _ = client.Send(requestMock);
 
-        authHandlerMock.Protected().Verify(sendMethodName, Times.Once(), requestMock.Object, ItExpr.IsAny<CancellationToken>());
+        Received.InOrder(() =>
+        {
+            InvokeHandlerSendMethod(authHandlerMock, requestMock, Arg.Any<CancellationToken>());
+        });
     }
 
     [Fact]
     public void WithAuthHandler_WhenNullHandler_ShouldThrow()
     {
-        HttpClientHandler handler = null!;
         _builder = new MafinHttpClientBuilder(Url);
 
-        var action = () => _builder.WithAuthHandler(handler);
+        var action = () => _builder.WithAuthHandler((HttpClientHandler)null!);
 
         action.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'handler')");
     }
@@ -66,23 +60,20 @@ public class MafinHttpClientBuilderTests
     [Fact]
     public void WithAuthHandler_WhenCustomizationActionPassed_ShouldInvokeAction()
     {
-        Mock<Action<HttpClientHandler>> actionMock = new();
-        actionMock.Setup(m => m(It.IsAny<HttpClientHandler>())).Verifiable();
-
         _builder = new MafinHttpClientBuilder(Url);
+        var actionMock = Substitute.For<Action<HttpClientHandler>>();
 
-        _ = _builder.WithAuthHandler(actionMock.Object).Build();
+        _ = _builder.WithAuthHandler(actionMock).Build();
 
-        actionMock.Verify(m => m(It.IsAny<HttpClientHandler>()), Times.Once());
+        actionMock.ReceivedWithAnyArgs(1).Invoke(default!);
     }
 
     [Fact]
     public void WithAuthHandler_WhenNullCustomizationAction_ShouldThrow()
     {
-        Action<HttpClientHandler> authAction = null!;
         _builder = new MafinHttpClientBuilder(Url);
 
-        var action = () => _builder.WithAuthHandler(authAction);
+        var action = () => _builder.WithAuthHandler((Action<HttpClientHandler>)null!);
 
         action.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'authCustomizationAction')");
     }
@@ -90,8 +81,8 @@ public class MafinHttpClientBuilderTests
     [Fact]
     public void WithJsonSerializerOptions_WhenOptionsPassed_ShouldSetMafinHttpClientOptions()
     {
-        JsonSerializerOptions options = new() { MaxDepth = 5, IgnoreReadOnlyFields = true };
         _builder = new MafinHttpClientBuilder(Url);
+        JsonSerializerOptions options = new() { MaxDepth = 5, IgnoreReadOnlyFields = true };
 
         var client = _builder.WithJsonSerializerOptions(options).Build();
 
@@ -101,10 +92,9 @@ public class MafinHttpClientBuilderTests
     [Fact]
     public void WithJsonSerializerOptions_WhenNullOptions_ShouldThrow()
     {
-        JsonSerializerOptions options = null!;
         _builder = new MafinHttpClientBuilder(Url);
 
-        var action = () => _builder.WithJsonSerializerOptions(options);
+        var action = () => _builder.WithJsonSerializerOptions((JsonSerializerOptions)null!);
 
         action.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'options')");
     }
@@ -112,38 +102,36 @@ public class MafinHttpClientBuilderTests
     [Fact]
     public void WithJsonSerializerOptions_WhenCustomizationActionPassed_ShouldInvokeAction()
     {
-        Mock<Action<JsonSerializerOptions>> actionMock = new();
-        actionMock.Setup(m => m(It.IsAny<JsonSerializerOptions>())).Verifiable();
-
         _builder = new MafinHttpClientBuilder(Url);
+        var actionMock = Substitute.For<Action<JsonSerializerOptions>>();
 
-        _ = _builder.WithJsonSerializerOptions(actionMock.Object).Build();
+        _ = _builder.WithJsonSerializerOptions(actionMock).Build();
 
-        actionMock.Verify(m => m(It.IsAny<JsonSerializerOptions>()), Times.Once());
+        actionMock.ReceivedWithAnyArgs(1).Invoke(default!);
     }
 
     [Fact]
     public void WithJsonSerializerOptions_WhenCustomizationActionForExistingOptionsPassed_ShouldInvokeActionWithSameOptions()
     {
-        JsonSerializerOptions options = new();
-        Mock<Action<JsonSerializerOptions>> actionMock = new();
-        actionMock.Setup(m => m(It.IsAny<JsonSerializerOptions>())).Verifiable();
-
         _builder = new MafinHttpClientBuilder(Url);
+        JsonSerializerOptions options = new();
+        var actionMock = Substitute.For<Action<JsonSerializerOptions>>();
 
-        _ = _builder.WithJsonSerializerOptions(options).WithJsonSerializerOptions(actionMock.Object).Build();
+        _ = _builder.WithJsonSerializerOptions(options).WithJsonSerializerOptions(actionMock).Build();
 
-        actionMock.Verify(m => m(options), Times.Once());
+        actionMock.Received(1).Invoke(options);
     }
 
     [Fact]
     public void WithJsonSerializerOptions_WhenNullCustomizationAction_ShouldThrow()
     {
-        Action<JsonSerializerOptions> optionsAction = null!;
         _builder = new MafinHttpClientBuilder(Url);
 
-        var action = () => _builder.WithJsonSerializerOptions(optionsAction);
+        var action = () => _builder.WithJsonSerializerOptions((Action<JsonSerializerOptions>)null!);
 
         action.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'serializerCustomizationAction')");
     }
+
+    [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "Send")]
+    private static extern HttpResponseMessage InvokeHandlerSendMethod(HttpClientHandler authHandler, HttpRequestMessage request, CancellationToken cancellationToken);
 }
