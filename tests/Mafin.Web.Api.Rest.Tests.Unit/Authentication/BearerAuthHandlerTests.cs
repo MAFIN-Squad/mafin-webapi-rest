@@ -40,7 +40,7 @@ public class BearerAuthHandlerTests
         return server.Url!;
     }
 
-    private class TestBearerAuthHandler(IBearerTokenProvider tokenProvider) : BearerAuthHandler(tokenProvider)
+    private sealed class TestBearerAuthHandler(IBearerTokenProvider tokenProvider) : BearerAuthHandler(tokenProvider)
     {
         public Task<HttpResponseMessage> PublicSendAsync(HttpRequestMessage request) => SendAsync(request, CancellationToken.None);
     }

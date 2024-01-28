@@ -39,7 +39,7 @@ public class BasicAuthHandlerTests
         return server.Url!;
     }
 
-    private class TestBasicAuthHandler(string userName, string password) : BasicAuthHandler(userName, password)
+    private sealed class TestBasicAuthHandler(string userName, string password) : BasicAuthHandler(userName, password)
     {
         public Task<HttpResponseMessage> PublicSendAsync(HttpRequestMessage request) => SendAsync(request, CancellationToken.None);
     }
