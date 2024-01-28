@@ -40,11 +40,9 @@ public class BearerAuthHandlerTests
 
         return server.Url!;
     }
-}
 
-#pragma warning disable SA1402 // File may only contain a single type
-public class TestBearerAuthHandler(IBearerTokenProvider tokenProvider) : BearerAuthHandler(tokenProvider)
-#pragma warning restore SA1402
-{
-    public Task<HttpResponseMessage> PublicSendAsync(HttpRequestMessage request) => SendAsync(request, CancellationToken.None);
+    private class TestBearerAuthHandler(IBearerTokenProvider tokenProvider) : BearerAuthHandler(tokenProvider)
+    {
+        public Task<HttpResponseMessage> PublicSendAsync(HttpRequestMessage request) => SendAsync(request, CancellationToken.None);
+    }
 }

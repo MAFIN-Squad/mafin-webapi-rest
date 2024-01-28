@@ -38,11 +38,9 @@ public class BasicAuthHandlerTests
 
         return server.Url!;
     }
-}
 
-#pragma warning disable SA1402 // File may only contain a single type
-public class TestBasicAuthHandler(string userName, string password) : BasicAuthHandler(userName, password)
-#pragma warning restore SA1402
-{
-    public Task<HttpResponseMessage> PublicSendAsync(HttpRequestMessage request) => SendAsync(request, CancellationToken.None);
+    private class TestBasicAuthHandler(string userName, string password) : BasicAuthHandler(userName, password)
+    {
+        public Task<HttpResponseMessage> PublicSendAsync(HttpRequestMessage request) => SendAsync(request, CancellationToken.None);
+    }
 }
