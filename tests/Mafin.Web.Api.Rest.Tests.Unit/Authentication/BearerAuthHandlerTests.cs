@@ -26,13 +26,12 @@ public class BearerAuthHandlerTests
         };
 
         using TestBearerAuthHandler handler = new(_mockBearerTokenProvider);
-        _ = await handler.PublicSendAsync(requestMessage).ConfigureAwait(false);
+        _ = await handler.PublicSendAsync(requestMessage);
 
         requestMessage.Headers.Authorization.Should().BeEquivalentTo(expectedHeader);
     }
 
-
-    private static string? GetMockedUrl()
+    private static string GetMockedUrl()
     {
         var server = WireMockServer.Start();
         server.Given(Request.Create().UsingGet())
