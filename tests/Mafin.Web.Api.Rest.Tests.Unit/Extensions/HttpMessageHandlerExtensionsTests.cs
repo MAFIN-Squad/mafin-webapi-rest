@@ -10,9 +10,8 @@ public class HttpMessageHandlerExtensionsTests
     public void WrapInto_WhenHandlerPassed_ShouldWrapIntoInnerHandler()
     {
         using SocketsHttpHandler handler = new();
-        var delegatingHandlerMock = Substitute.For<DelegatingHandler>();
 
-        var resultingHandler = handler.WrapInto(new[] { delegatingHandlerMock });
+        var resultingHandler = handler.WrapInto(new[] { Substitute.For<DelegatingHandler>() });
 
         resultingHandler.Should().BeAssignableTo<DelegatingHandler>();
         resultingHandler.As<DelegatingHandler>().InnerHandler.Should().BeEquivalentTo(handler);

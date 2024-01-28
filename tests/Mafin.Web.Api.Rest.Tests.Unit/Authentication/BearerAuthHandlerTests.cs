@@ -18,7 +18,7 @@ public class BearerAuthHandlerTests
     public async Task SendAsync_WhenPassedTokenProvider_ShouldSetHeader()
     {
         var token = _fixture.Create<string>();
-        _mockBearerTokenProvider.GetBearerToken().Returns(token);
+        _ = _mockBearerTokenProvider.GetBearerToken().Returns(token);
         AuthenticationHeaderValue expectedHeader = new("Bearer", token);
         using HttpRequestMessage requestMessage = new()
         {

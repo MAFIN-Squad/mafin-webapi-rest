@@ -7,7 +7,6 @@ namespace Mafin.Web.Api.Rest.Tests.Unit;
 public class MafinHttpClientBuilderTests
 {
     private const string Url = "https://example.local";
-
     private MafinHttpClientBuilder? _builder;
 
     [Fact]
@@ -66,7 +65,7 @@ public class MafinHttpClientBuilderTests
 
         _ = _builder.WithAuthHandler(actionMock).Build();
 
-        actionMock.Received(1).Invoke(Arg.Any<HttpClientHandler>());
+        actionMock.ReceivedWithAnyArgs(1).Invoke(default!);
     }
 
     [Fact]
@@ -108,7 +107,7 @@ public class MafinHttpClientBuilderTests
 
         _ = _builder.WithJsonSerializerOptions(actionMock).Build();
 
-        actionMock.Received(1).Invoke(Arg.Any<JsonSerializerOptions>());
+        actionMock.ReceivedWithAnyArgs(1).Invoke(default!);
     }
 
     [Fact]
