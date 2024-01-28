@@ -37,13 +37,13 @@ public class MafinHttpClientBuilderTests
         var authHandlerMock = Substitute.For<HttpClientHandler>();
         var requestMock = Substitute.For<HttpRequestMessage>();
         var client = _builder.WithAuthHandler(authHandlerMock).Build();
-        _ = InvokeHandlerMethod(authHandlerMock, requestMock, Arg.Any<CancellationToken>()).Returns(Substitute.For<HttpResponseMessage>());
+        _ = InvokeHandlerSendMethod(authHandlerMock, requestMock, Arg.Any<CancellationToken>()).Returns(Substitute.For<HttpResponseMessage>());
 
         _ = client.Send(requestMock);
 
         Received.InOrder(() =>
         {
-            InvokeHandlerMethod(authHandlerMock, requestMock, Arg.Any<CancellationToken>());
+            InvokeHandlerSendMethod(authHandlerMock, requestMock, Arg.Any<CancellationToken>());
         });
     }
 
@@ -133,5 +133,5 @@ public class MafinHttpClientBuilderTests
     }
 
     [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "Send")]
-    private static extern HttpResponseMessage InvokeHandlerMethod(HttpClientHandler authHandler, HttpRequestMessage request, CancellationToken cancellationToken);
+    private static extern HttpResponseMessage InvokeHandlerSendMethod(HttpClientHandler authHandler, HttpRequestMessage request, CancellationToken cancellationToken);
 }
