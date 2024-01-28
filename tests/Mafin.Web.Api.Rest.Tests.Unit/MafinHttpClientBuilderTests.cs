@@ -34,14 +34,11 @@ public class MafinHttpClientBuilderTests
     [Fact]
     public void WithAuthHandler_WhenHandlerPassed_ShouldDelegateHttpCallToSameHandler()
     {
+        _builder = new MafinHttpClientBuilder(Url);
         var authHandlerMock = Substitute.For<HttpClientHandler>();
         var requestMock = Substitute.For<HttpRequestMessage>();
-        var responseMock = Substitute.For<HttpResponseMessage>();
-
-        InvokeHandlerMethod(authHandlerMock, requestMock, Arg.Any<CancellationToken>()).Returns(responseMock);
-
-        _builder = new MafinHttpClientBuilder(Url);
         var client = _builder.WithAuthHandler(authHandlerMock).Build();
+        _ = InvokeHandlerMethod(authHandlerMock, requestMock, Arg.Any<CancellationToken>()).Returns(Substitute.For<HttpResponseMessage>());
 
         client.Send(requestMock);
 
@@ -64,9 +61,8 @@ public class MafinHttpClientBuilderTests
     [Fact]
     public void WithAuthHandler_WhenCustomizationActionPassed_ShouldInvokeAction()
     {
-        var actionMock = Substitute.For<Action<HttpClientHandler>>();
-
         _builder = new MafinHttpClientBuilder(Url);
+        var actionMock = Substitute.For<Action<HttpClientHandler>>();
 
         _ = _builder.WithAuthHandler(actionMock).Build();
 
@@ -86,8 +82,8 @@ public class MafinHttpClientBuilderTests
     [Fact]
     public void WithJsonSerializerOptions_WhenOptionsPassed_ShouldSetMafinHttpClientOptions()
     {
-        JsonSerializerOptions options = new() { MaxDepth = 5, IgnoreReadOnlyFields = true };
         _builder = new MafinHttpClientBuilder(Url);
+        JsonSerializerOptions options = new() { MaxDepth = 5, IgnoreReadOnlyFields = true };
 
         var client = _builder.WithJsonSerializerOptions(options).Build();
 
@@ -107,9 +103,8 @@ public class MafinHttpClientBuilderTests
     [Fact]
     public void WithJsonSerializerOptions_WhenCustomizationActionPassed_ShouldInvokeAction()
     {
-        var actionMock = Substitute.For<Action<JsonSerializerOptions>>();
-
         _builder = new MafinHttpClientBuilder(Url);
+        var actionMock = Substitute.For<Action<JsonSerializerOptions>>();
 
         _ = _builder.WithJsonSerializerOptions(actionMock).Build();
 
@@ -119,10 +114,9 @@ public class MafinHttpClientBuilderTests
     [Fact]
     public void WithJsonSerializerOptions_WhenCustomizationActionForExistingOptionsPassed_ShouldInvokeActionWithSameOptions()
     {
+        _builder = new MafinHttpClientBuilder(Url);
         JsonSerializerOptions options = new();
         var actionMock = Substitute.For<Action<JsonSerializerOptions>>();
-
-        _builder = new MafinHttpClientBuilder(Url);
 
         _ = _builder.WithJsonSerializerOptions(options).WithJsonSerializerOptions(actionMock).Build();
 
@@ -140,5 +134,5 @@ public class MafinHttpClientBuilderTests
     }
 
     [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "Send")]
-    private static extern HttpResponseMessage? InvokeHandlerMethod(HttpClientHandler authHandlerMock, HttpRequestMessage request, CancellationToken cancellationToken);
+    private static extern HttpResponseMessage InvokeHandlerMethod(HttpClientHandler authHandler, HttpRequestMessage request, CancellationToken cancellationToken);
 }
