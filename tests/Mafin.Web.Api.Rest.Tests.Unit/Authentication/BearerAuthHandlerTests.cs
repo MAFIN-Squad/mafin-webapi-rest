@@ -12,20 +12,20 @@ namespace Mafin.Web.Api.Rest.Tests.Unit.Authentication;
 public class BearerAuthHandlerTests
 {
     private readonly Fixture _fixture = new();
-    private readonly IBearerTokenProvider _mockBearerTokenProvider = Substitute.For<IBearerTokenProvider>();
+    private readonly IBearerTokenProvider _bearerTokenProviderMock = Substitute.For<IBearerTokenProvider>();
 
     [Fact]
     public async Task SendAsync_WhenPassedTokenProvider_ShouldSetHeader()
     {
         var token = _fixture.Create<string>();
-        _ = _mockBearerTokenProvider.GetBearerToken().Returns(token);
+        _ = _bearerTokenProviderMock.GetBearerToken().Returns(token);
         AuthenticationHeaderValue expectedHeader = new("Bearer", token);
         using HttpRequestMessage requestMessage = new()
         {
             RequestUri = new Uri(GetMockedUrl())
         };
 
-        using TestBearerAuthHandler handler = new(_mockBearerTokenProvider);
+        using TestBearerAuthHandler handler = new(_bearerTokenProviderMock);
         _ = await handler.PublicSendAsync(requestMessage);
 
         requestMessage.Headers.Authorization.Should().BeEquivalentTo(expectedHeader);
