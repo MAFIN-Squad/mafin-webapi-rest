@@ -39,7 +39,7 @@ public class MafinHttpClientBuilderTests
         var client = _builder.WithAuthHandler(authHandlerMock).Build();
         _ = InvokeHandlerMethod(authHandlerMock, requestMock, Arg.Any<CancellationToken>()).Returns(Substitute.For<HttpResponseMessage>());
 
-        client.Send(requestMock);
+        _ = client.Send(requestMock);
 
         Received.InOrder(() =>
         {
